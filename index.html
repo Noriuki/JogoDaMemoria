@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Jogo da Memória</title>
+    </head>
+    <body onload="GameStart()">
+        <style>
+            #wrap{
+                width: max-content;
+                height: max-content;
+                background-color: #f2f2f2;
+                margin: 15% auto;
+                padding: 10px;
+                border: 1px solid purple;
+            }
+            .row{
+                display: flex;
+                width: 630px;
+                height: 220px;
+                margin: 10px 0px;
+            }
+            .col{
+                height: 100%;
+                width: 200px;
+                margin: 0px 5px;
+                position: relative;
+                border: 1px solid black;
+                box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.75);
+            }
+            .front{
+                position: absolute;
+                background-position: center;
+                background-size: cover;
+                width: 100%;
+                height: 100%;
+            }
+            .back{
+                position: absolute;
+                background-image: linear-gradient(to right bottom, #02ff86, #00eff0, #00d2ff, #009cff, #ea07f4);
+                background-position: center;
+                background-size: cover;
+                width: 100%;
+                height: 100%;
+            }
+            .col, .col div{
+                border-radius: 10px;
+            }
+            .flipped .back, .pair .back{
+                display: none;
+            }
+            #wrap h2{
+                margin: auto;
+                margin-bottom: 20px;
+                width: fit-content;
+                color: purple;
+                border-bottom: 1px solid purple;
+            }
+        </style>
+        <div id="wrap">
+            <h2>Jogo da Memória</h2>
+            <div class="row">
+                <div class="col" onclick="flipCard(this)">
+                    <div class="front"></div>
+                    <div class="back"></div>
+                </div>
+                <div class="col" onclick="flipCard(this)">
+                    <div class="front"></div>
+                    <div class="back"></div>
+                </div>
+                <div class="col" onclick="flipCard(this)">
+                    <div class="front"></div>
+                    <div class="back"></div>
+                </div>
+                <div class="col" onclick="flipCard(this)">
+                    <div class="front"></div>
+                    <div class="back"></div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col" onclick="flipCard(this)">
+                    <div class="front"></div>
+                    <div class="back"></div>
+                </div>
+                <div class="col" onclick="flipCard(this)">
+                    <div class="front"></div>
+                    <div class="back"></div>
+                </div>
+                <div class="col" onclick="flipCard(this)">
+                    <div class="front"></div>
+                    <div class="back"></div>
+                </div>
+                <div class="col" onclick="flipCard(this)">
+                    <div class="front"></div>
+                    <div class="back"></div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            function randImage(){
+                // images names
+                var images = [ "Jellyfish.jpg", "Koala.jpg", "Penguins.jpg", "Tulips.jpg"];
+
+                //creates am array for the random positions
+                var position = []
+
+                for(let i = 0;i < 8;i++){
+                    let img = images[Math.floor(Math.random() * 4)]
+
+                    while(img == undefined){
+                        img = images[Math.floor(Math.random() * 4)]
+                    }
+
+                    // if position has 1 img already
+                    if(position.indexOf(img) != -1){
+                        position[i] = img;
+                        images = images.filter( el => el != img)
+                    } else {
+                        position[i] = img;
+                    }
+                }
+
+                return position;
+            }
+
+            function flipCard(div){
+                compareCard(div);
+                endGame()
+            }
+
+            function compareCard(div){
+                let selectedCards = Array.from(document.getElementsByClassName("flipped"));
+                
+                if(selectedCards.length < 2){
+                    div.classList.add("flipped")
+                }
+                else {
+                    selectedCards.forEach( (e) => {
+                        e.classList.remove("flipped");
+                    })
+                    if(selectedCards[0].id == selectedCards[1].id){
+                        selectedCards.forEach( (e) => {
+                                e.classList.add("pair")
+                        })
+                    }
+                }
+            }
+
+            function endGame(){
+                let allCards = document.getElementsByClassName("pair").length;
+                
+                if(allCards == 8){
+                    location.reload();
+                }
+
+            }
+
+            function GameStart(){
+                var cards = document.getElementsByClassName("col");
+                var cardsFront = document.getElementsByClassName("front")
+                var imgPositions = randImage();
+
+                for(let j = 0; j < 8; j++){
+                    cardsFront[j].style.backgroundImage = `url('${imgPositions[j]}')`;
+                    cards[j].id = imgPositions[j];
+                }
+            }
+
+        </script>
+    </body>
+</html>
